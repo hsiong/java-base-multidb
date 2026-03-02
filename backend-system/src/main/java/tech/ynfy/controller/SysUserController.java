@@ -15,7 +15,7 @@ import tech.ynfy.module.user.bean.SysUserSaveDTO;
 import tech.ynfy.module.user.bean.SysUserUpdateDTO;
 import tech.ynfy.module.user.service.SysUserService;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 /**
  * 〈〉

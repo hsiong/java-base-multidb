@@ -14,8 +14,8 @@ import tech.ynfy.module.auth.bean.SysUserAuthVO;
 import tech.ynfy.module.auth.service.SysAuthService;
 import tech.ynfy.module.user.bean.SysUserSaveDTO;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 /**
  * 〈〉

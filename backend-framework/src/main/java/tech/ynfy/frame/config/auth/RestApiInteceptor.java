@@ -31,8 +31,8 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import tech.ynfy.frame.util.JwtTokenUtil;
 import tech.ynfy.frame.util.RedisUtil;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 
 

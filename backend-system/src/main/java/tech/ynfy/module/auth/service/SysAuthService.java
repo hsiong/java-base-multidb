@@ -4,7 +4,7 @@ package tech.ynfy.module.auth.service;
 import tech.ynfy.module.auth.bean.SysUserAuthVO;
 import tech.ynfy.module.user.bean.SysUserSaveDTO;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 〈〉

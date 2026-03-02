@@ -9,7 +9,7 @@ import tech.ynfy.frame.config.xss.RepeatedlyRequestWrapper;
 import tech.ynfy.frame.util.HttpUtil;
 import tech.ynfy.frame.util.RedisUtil;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 
 import static tech.ynfy.frame.constant.RedisConstant.*;

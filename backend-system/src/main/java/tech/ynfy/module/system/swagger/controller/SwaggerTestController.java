@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import tech.ynfy.module.system.swagger.model.PostSwaggerDTO;
 import tech.ynfy.module.system.swagger.model.PostSwaggerVO;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import javax.websocket.server.PathParam;
 
 /**

@@ -82,10 +82,11 @@
 
 
         <!-- Dynamic datasource support -->
+        <!-- jdk21 springboot 3.4.10: 3.5.2->4.5.0 -->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-            <version>3.5.2</version>
+            <version>4.5.0</version>
         </dependency>
         
 
@@ -96,32 +97,42 @@
             <version>${mybatis-plus-join.version}</version>
         </dependency>
 
-        <!-- mybatis-plus 核心依赖 (提供基础功能和注解) -->
+        <!-- mybatis-plus 核心依赖 (提供基础功能和注解)
+        mybatis-plus-boot-starter 替换为 mybatis-plus-spring-boot3-starter
+        新增 mybatis-plus-jsqlparser
+         -->
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+            <version>${mybatis-plus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-jsqlparser</artifactId>
             <version>${mybatis-plus.version}</version>
         </dependency>
 
         <!-- Oracle JDBC Driver -->
+        <!-- jdk21 springboot 3.4.10: 8->11 -->
         <dependency>
             <groupId>com.oracle.database.jdbc</groupId>
-            <artifactId>ojdbc8</artifactId>
+            <artifactId>ojdbc11</artifactId>
             <scope>runtime</scope>
         </dependency>
 
         <!-- PostgreSQL JDBC Driver -->
+        <!-- jdk21 springboot 3.4.10: 42.3.6 -> 42.7.4 -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.3.6</version> <!-- 没版本的话建议补一个，或用你们统一版本 -->
+            <version>42.7.4</version>
         </dependency>
-
-
+        
         <!-- swagger -->
+        <!-- jdk21 springboot 3.4.10: springdoc-openapi-ui->springdoc-openapi-starter-webmvc-ui -->
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${swagger-springdoc-core.version}</version>
             <exclusions>
                 <exclusion>
@@ -134,7 +145,7 @@
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-openapi3-spring-boot-starter</artifactId>
-            <version>${xiaoming-springdoc-ui.version}</version>
+            <version>${knife4j-openapi3-spring-boot-starter}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>

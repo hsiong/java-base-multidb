@@ -1,17 +1,26 @@
 package tech.ynfy;
 
 
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAutoConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-@SpringBootApplication
+/**
+ * 1. jdk21 springboot 3.4.10 
+ * @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+ * @Import(DynamicDataSourceAutoConfiguration.class) // 手动强行导入
+ */
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+@Import(DynamicDataSourceAutoConfiguration.class) // 手动强行导入
 @Slf4j
 @MapperScan(value={"tech.ynfy.module.**.mapper"})
 public class RunApplication {
