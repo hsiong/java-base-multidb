@@ -34,7 +34,7 @@ else
 fi
 
 echo "==> [2/5] 删除旧镜像（如果存在）: ${IMAGE_NAME}"
-if docker images --format '{{.Repository}}:{{.Tag}}' | grep -qx "${IMAGE_NAME}"; then
+if docker images --format '{{.Repository}}' | grep -qx "${IMAGE_NAME}"; then
   # 若镜像被其他容器占用，会删不掉；上一步已 rm 容器，一般没问题
   docker rmi -f "${IMAGE_NAME}" >/dev/null || true
   echo "    已删除旧镜像: ${IMAGE_NAME}"
