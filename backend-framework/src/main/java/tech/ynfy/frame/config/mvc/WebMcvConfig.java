@@ -32,29 +32,29 @@ import java.util.Objects;
  */
 @Configuration
 public class WebMcvConfig implements WebMvcConfigurer {
-
+    
     @Autowired
     private RepeatSubmitInterceptor repeatSubmitInterceptor;
-
+    
     // /api/**
     @Value("${ynfy.path.accessPath}")
     private String accessPath;
-
+    
     // file:绝对路径, file:绝对路径
     @Value("${ynfy.path.localPath}")
     private String localPath;
-
+    
     @Value("${springdoc.api-docs.path}")
     private String openApiPath;
-
-
+    
+    
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // 本地文件上传路径
         registry.addResourceHandler(accessPath).addResourceLocations(localPath.split(","));
-
+        
     }
-
+    
     /**
      * 自定义拦截规则
      */
@@ -68,28 +68,24 @@ public class WebMcvConfig implements WebMvcConfigurer {
                                      "/icbc/client/**"
                 );
     }
-
-//    /**
-//     * 方案一： 默认访问根路径跳转 doc.html页面 （swagger文档页面）
-//     * 方案二： 访问根路径改成跳转 index.html页面 （简化部署方案： 可以把前端打包直接放到项目的 webapp，上面的配置）
-//     */
-//    @Override
-//    public void addViewControllers(ViewControllerRegistry registry) {
-//        registry.addViewController("/").setViewName("doc.html");
-//    }
-
+    
+    //    /**
+    //     * 方案一： 默认访问根路径跳转 doc.html页面 （swagger文档页面）
+    //     * 方案二： 访问根路径改成跳转 index.html页面 （简化部署方案： 可以把前端打包直接放到项目的 webapp，上面的配置）
+    //     */
+    //    @Override
+    //    public void addViewControllers(ViewControllerRegistry registry) {
+    //        registry.addViewController("/").setViewName("doc.html");
+    //    }
+    
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.clear();
-        converters.add(stringConverter());
-        converters.add(fastConverter());
+        // Keep default converters and prepend customized converters for compatibility.
+        converters.add(0, new ByteArrayHttpMessageConverter());
+        converters.add(1, stringConverter());
+        converters.add(2, fastConverter());
     }
-
-    @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.add(new ByteArrayHttpMessageConverter());
-    }
-
+    
     /**
      * 非Controller层通过RequestContextHolder.getRequestAttributes()
      * 获取HttpServletRequest，HttpServletRespon空指针问题
@@ -100,7 +96,7 @@ public class WebMcvConfig implements WebMvcConfigurer {
     public RequestContextListener requestContextListenerBean() {
         return new RequestContextListener();
     }
-
+    
     /**
      * 跨域配置
      */
@@ -119,12 +115,12 @@ public class WebMcvConfig implements WebMvcConfigurer {
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
-
-
+    
+    
     private HttpMessageConverter<String> stringConverter() {
         return new StringHttpMessageConverter(StandardCharsets.UTF_8);
     }
-
+    
     private HttpMessageConverter fastConverter() {
         //1、定义一个convert转换消息的对象
         FastJsonHttpMessageConverter fastConverter = new FastJsonHttpMessageConverter();
@@ -149,25 +145,28 @@ public class WebMcvConfig implements WebMvcConfigurer {
         });
         //格式化日期
         fastJsonConfig.setCharset(StandardCharsets.UTF_8);
-        //2-1 处理中文乱码问题
+        //2-1 处理中文乱码问题：显式在文本类型上声明 UTF-8
         List<MediaType> supportedMediaTypes = new ArrayList<>();
         supportedMediaTypes.add(MediaType.APPLICATION_JSON);
-        supportedMediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
-        supportedMediaTypes.add(MediaType.APPLICATION_ATOM_XML);
-        supportedMediaTypes.add(MediaType.APPLICATION_FORM_URLENCODED);
+        supportedMediaTypes.add(MediaType.parseMediaType("application/*+json")); // 补全 JSON 媒体类型，修正 curl 下的异常返回链路
+        supportedMediaTypes.add(MediaType.parseMediaType(MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8"));
+        supportedMediaTypes.add(MediaType.parseMediaType(MediaType.APPLICATION_ATOM_XML_VALUE + ";charset=UTF-8"));
+        supportedMediaTypes.add(MediaType.parseMediaType(MediaType.APPLICATION_FORM_URLENCODED_VALUE + ";charset=UTF-8"));
         supportedMediaTypes.add(MediaType.APPLICATION_OCTET_STREAM);
         supportedMediaTypes.add(MediaType.APPLICATION_PDF);
-        supportedMediaTypes.add(MediaType.APPLICATION_RSS_XML);
-        supportedMediaTypes.add(MediaType.APPLICATION_XHTML_XML);
-        supportedMediaTypes.add(MediaType.APPLICATION_XML);
+        supportedMediaTypes.add(MediaType.parseMediaType(MediaType.APPLICATION_RSS_XML_VALUE + ";charset=UTF-8"));
+        supportedMediaTypes.add(MediaType.parseMediaType(MediaType.APPLICATION_XHTML_XML_VALUE + ";charset=UTF-8"));
+        supportedMediaTypes.add(MediaType.parseMediaType(MediaType.APPLICATION_XML_VALUE + ";charset=UTF-8"));
         supportedMediaTypes.add(MediaType.IMAGE_GIF);
         supportedMediaTypes.add(MediaType.IMAGE_JPEG);
         supportedMediaTypes.add(MediaType.IMAGE_PNG);
-        supportedMediaTypes.add(MediaType.TEXT_EVENT_STREAM);
-        supportedMediaTypes.add(MediaType.TEXT_HTML);
-        supportedMediaTypes.add(MediaType.TEXT_MARKDOWN);
-        supportedMediaTypes.add(MediaType.TEXT_PLAIN);
-        supportedMediaTypes.add(MediaType.TEXT_XML);
+        supportedMediaTypes.add(MediaType.parseMediaType(MediaType.TEXT_EVENT_STREAM_VALUE + ";charset=UTF-8"));
+        supportedMediaTypes.add(MediaType.parseMediaType(MediaType.TEXT_HTML_VALUE + ";charset=UTF-8"));
+        supportedMediaTypes.add(MediaType.parseMediaType(MediaType.TEXT_MARKDOWN_VALUE + ";charset=UTF-8"));
+        supportedMediaTypes.add(MediaType.parseMediaType(MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8"));
+        supportedMediaTypes.add(MediaType.parseMediaType(MediaType.TEXT_XML_VALUE + ";charset=UTF-8"));
+        
+        fastConverter.setDefaultCharset(StandardCharsets.UTF_8);
         fastConverter.setSupportedMediaTypes(supportedMediaTypes);
         //3、在convert中添加配置信息
         fastConverter.setFastJsonConfig(fastJsonConfig);

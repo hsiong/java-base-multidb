@@ -27,7 +27,7 @@ import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 import tech.ynfy.frame.util.JwtTokenUtil;
 import tech.ynfy.frame.util.RedisUtil;
 
@@ -42,29 +42,30 @@ import java.lang.reflect.Method;
  *
  */
 @Component
-public class RestApiInteceptor extends HandlerInterceptorAdapter {
-
+public class RestApiInteceptor implements HandlerInterceptor {
+    
     @Autowired
     private RedisUtil redisUtil;
-
+    
     @Override
-    public boolean preHandle(HttpServletRequest request,
-                             HttpServletResponse response,
-                             Object handler) {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (handler instanceof org.springframework.web.servlet.resource.ResourceHttpRequestHandler) {
             return true;
         }
         return check(request, response, handler);
     }
-
+    
     private boolean check(HttpServletRequest request, HttpServletResponse response, Object handler) {
-
+        
         // ①:START 方法注解级拦截器
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method method = handlerMethod.getMethod();
         // 有 @Pass 注解，不需要认证
         Pass methodAnnotation = method.getAnnotation(Pass.class);
-        if (methodAnnotation != null) {
+        //        if (methodAnnotation != null) { // 改为 无需认证
+        //            return true;
+        //        }
+        if (methodAnnotation == null) {
             return true;
         }
         
@@ -74,7 +75,7 @@ public class RestApiInteceptor extends HandlerInterceptorAdapter {
             RenderUtil.renderJson(response, Result.authExpire());
             return false;
         }
-
+        
         //验证token是否过期,包含了验证jwt是否正确
         try {
             boolean flag = JwtTokenUtil.isTokenExpired(authToken);
@@ -89,7 +90,8 @@ public class RestApiInteceptor extends HandlerInterceptorAdapter {
                 String userId = JwtTokenUtil.getUsernameFromToken(authToken);
                 // redis 二次验证
                 Object object = redisUtil.hget(RedisConstant.USER_KEY, userId);
-                if (ObjectUtil.isEmpty(object) || !authToken.equals(object.toString())) {//过期：redis中不存在过期或者不相等
+                if (ObjectUtil.isEmpty(object) ||
+                    !authToken.equals(object.toString())) {//过期：redis中不存在过期或者不相等
                     RenderUtil.renderJson(response, Result.authExpire());
                     return false;
                 }
@@ -103,5 +105,5 @@ public class RestApiInteceptor extends HandlerInterceptorAdapter {
         }
         return true;
     }
-
+    
 }
