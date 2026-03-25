@@ -15,10 +15,10 @@ public class DynamicRoutingDialect implements IDialect {
 	public DialectModel buildPaginationSql(String originalSql, long offset, long limit) {
 		String ds = DynamicDataSourceContextHolder.peek(); // 当前数据源
 		
-		if ("postgres".equalsIgnoreCase(ds)) {
-			return postgresDialect.buildPaginationSql(originalSql, offset, limit);
-		} else {
+		if ("oracle".equalsIgnoreCase(ds)) {
 			return oracleDialect.buildPaginationSql(originalSql, offset, limit);
+		} else {
+			return postgresDialect.buildPaginationSql(originalSql, offset, limit);
 		}
 	}
 }
